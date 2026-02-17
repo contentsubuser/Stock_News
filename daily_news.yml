@@ -1,0 +1,43 @@
+name: Daily Stock News
+
+on:
+  schedule:
+    # 5:00 AM IST = 11:30 PM UTC (Previous Day)
+    # Cron syntax: minute hour day month day-of-week
+    - cron: '30 23 * * *'
+  workflow_dispatch: # Allows you to run it manually to test
+
+jobs:
+  run_and_email:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run News Script
+        env:
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+        run: python main.py
+
+      - name: Send Email with CSV
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: Daily Stock News Report
+          body: "Here is your daily stock news report attached."
+          to: ${{ secrets.MAIL_USERNAME }} # Sends to yourself
+          from: GitHub News Bot
+          attachments: daily_stock_news.csv

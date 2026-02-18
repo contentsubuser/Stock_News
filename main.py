@@ -33,9 +33,11 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 logger = logging.getLogger(__name__)
 
 COMPANIES = [
-    "Reliance Industries","RELIANCE","HDFC Bank","HDFCBANK","Tata Consultancy Services","TCS",
-    "Infosys","INFY","ICICI Bank","ICICIBANK","Hindustan Unilever",
-    ,"HINDUNILVR","State Bank of India","SBIN","Bharti Airtel","BHARTIARTL","ITC","Larsen & Toubro",
+    "Reliance Industries", "RELIANCE",
+    "HDFC Bank", "HDFCBANK",
+    "Tata Consultancy Services", "TCS",
+     "Infosys","INFY","ICICI Bank","ICICIBANK","Hindustan Unilever","HINDUNILVR",
+    "State Bank of India","SBIN","Bharti Airtel","BHARTIARTL","ITC","Larsen & Toubro",
     "LT","Kotak Bank","KOTAKBANK","Axis Bank","AXISBANK","Maruti Suzuki India",
     "MARUTI","Sun Pharmaceutical Industries","SUNPHARMA","Titan Company","TITAN",
     "HCL Technologies","HCLTECH","Bajaj Finance","BAJFINANCE","Asian Paints","ASIANPAINT",

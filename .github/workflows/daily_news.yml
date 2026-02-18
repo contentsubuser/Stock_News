@@ -2,8 +2,8 @@ name: Daily Stock News
 
 on:
   schedule:
-    # Runs at 5:00 AM IST (which is 11:30 PM UTC previous day)
-    - cron: '30 23 * * *'
+    # 5:03 AM IST = 23:33 UTC (Previous Day)
+    - cron: '33 23 * * *'
   workflow_dispatch: # Allows you to run it manually
 
 jobs:

@@ -1,10 +1,17 @@
-name: Daily Stock News
+name: Stock News
 
 on:
-  schedule:
-    # 5:03 AM IST = 23:33 UTC (Previous Day)
-    - cron: '33 23 * * *'
-  workflow_dispatch: # Allows you to run it manually
+  workflow_dispatch:
+    inputs:
+      hours:
+        description: "Time frame to search news"
+        required: true
+        default: "24"
+        type: choice
+        options:
+          - "24"
+          - "48"
+          - "72"
 
 jobs:
   run_and_email:
@@ -12,20 +19,20 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
       - name: Install Dependencies
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Run News Script
         env:
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+          SEARCH_WINDOW_HOURS: ${{ inputs.hours }}
         run: python main.py
 
       - name: Send Email with CSV
@@ -33,10 +40,17 @@ jobs:
         with:
           server_address: smtp.gmail.com
           server_port: 465
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: Daily Stock News Report
-          body: "Here is your daily stock news report attached."
-          to: ${{ secrets.MAIL_USERNAME }}
-          from: GitHub News Bot
+          secure: true
+          username: ${{ secrets.SENDER_EMAIL }}
+          password: ${{ secrets.SENDER_PASSWORD }}
+          subject: Stock News Report - Last ${{ inputs.hours }} Hours
+          body: "Attached is the stock news report for the last ${{ inputs.hours }} hours."
+          to: ${{ secrets.RECEIVER_EMAIL }}
+          from: Stock News Bot <${{ secrets.SENDER_EMAIL }}>
           attachments: daily_stock_news.csv
+
+      - name: Keep CSV as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stock-news-csv
+          path: daily_stock_news.csv
